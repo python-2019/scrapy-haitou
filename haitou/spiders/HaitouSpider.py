@@ -15,7 +15,8 @@ class HaitouSpider(scrapy.Spider):
         for tr in tr_list:
             item = HaitouItem()
             item['company'] = tr.xpath("./td[2]/a/div/text()").extract_first()
-            item['school'] = tr.xpath("./td[2]/a/span/text()").extract_first()
+            # item['school'] = tr.xpath("./td[2]/a/span/text()").extract_first()
+            item['school'] = tr.xpath("./td[2]/a/@title").extract_first()
             item['holding_time'] = tr.xpath("./td[3]/span[1]/text()").extract_first()
             item['addr'] = tr.xpath("./td[4]/span[1]/text()").extract_first()
             item['href'] = self.host + tr.xpath("./td[7]/a/@href").extract_first()
