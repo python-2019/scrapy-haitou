@@ -28,7 +28,6 @@ class HaitouPipeline(object):
         item['school'] = item['school'][item['school'].find("学校") + 3:item['school'].find("地点") - 1]
         row = [item['company'], item['school'], item['holding_time'], item['addr'], item['href']]
         self.csv_writer.writerow(row)
-        # logging.warning(row)
         print(row)
         return item
 
