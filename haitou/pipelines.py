@@ -25,7 +25,7 @@ class HaitouPipeline(object):
 
     def process_item(self, item, spider):
         item['holding_time'] = item['holding_time']
-        item['school'] = item['school'][item['school'].find("学校") + 3:item['school'].find("地点") - 1]
+        item['school'] = item['school'][item['school'].find("学校：") + 3:item['school'].find("地点：") - 1]
         row = [item['company'], item['school'], item['holding_time'], item['addr'], item['href']]
         self.csv_writer.writerow(row)
         print(row)
