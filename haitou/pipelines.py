@@ -15,6 +15,7 @@ import os
 class HaitouPipeline(object):
 
     def open_spider(self, spider):
+        self.now_timestamp = time.time()
         file_path = settings.get("FILE_PATH")
         if os.path.exists(file_path):
             os.rename(file_path, file_path.replace('.csv', "_" + str(time.time()) + '.csv'))
@@ -24,15 +25,18 @@ class HaitouPipeline(object):
         self.csv_writer.writerow(headers)
 
     def process_item(self, item, spider):
-        item['holding_time'] = item['holding_time']
-        item['school'] = item['school'][item['school'].find("学校：") + 3:item['school'].find("地点：") - 1]
-        row = [item['company'], item['school'], item['holding_time'], item['addr'], item['href']]
-        self.csv_writer.writerow(row)
-        print(row)
-        return item
+        holding_timestamp = item['holding_time'][0:10]
+        strptime = time.strptime(holding_timestamp, "%Y-%m-%d")
+        data_time = time.mktime(strptime)
+        if data_time > self.now_timestamp:
+            item['school'] = item['school'][item['school'].find("学校：") + 3:item['school'].find("地点：") - 1]
+            row = [item['company'], item['school'], item['holding_time'], item['addr'], item['href']]
+            self.csv_writer.writerow(row)
+            print(row)
+            return item
 
     def close_spider(self, spider):
         try:
-            self.file.flush()
+            self.file.closed()
         except Exception:
             logging.warning("\n\n======爬取完毕=====")

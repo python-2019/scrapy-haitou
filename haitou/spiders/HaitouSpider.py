@@ -17,6 +17,9 @@ class HaitouSpider(scrapy.Spider):
         city_list = response.xpath(
             "//div[@class='dropdown-menu dropdown-menu-ht animated fadeInUp dropdown-city']/a/@data-value").extract()
         for city in city_list:
+            print("==============")
+            print(city)
+            print("==============")
             # 根据页面规律 组合url
             url = self.host + self.city_pre + city + self.now_page_pre + str(self.now_page)
             yield scrapy.Request(url, callback=self.parse_list)
@@ -35,12 +38,12 @@ class HaitouSpider(scrapy.Spider):
             item['addr'] = tr.xpath("./td[4]/span[1]/text()").extract_first()
             item['href'] = self.host + tr.xpath("./td[7]/a/@href").extract_first()
             yield item
-        # 翻页
-        next_page = response.xpath("//a[contains(text(),'›')]/@href").extract_first()
-        if next_page is not None:
-            next_page_url = self.host + next_page
-            print(next_page_url)
-            yield scrapy.Request(
-                next_page_url,
-                callback=self.parse_list
-            )
+        # 翻页 网站做了反扒 观察后第二页开始 符合规则的很少 直接 不翻页
+        # next_page = response.xpath("//a[contains(text(),'›')]/@href").extract_first()
+        # if next_page is not None:
+        #     next_page_url = self.host + next_page
+        #     print(next_page_url)
+        #     yield scrapy.Request(
+        #         next_page_url,
+        #         callback=self.parse_list
+        #     )
